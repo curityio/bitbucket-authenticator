@@ -41,6 +41,7 @@ import se.curity.identityserver.sdk.web.Request;
 import se.curity.identityserver.sdk.web.Response;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +49,7 @@ import java.util.Optional;
 
 import static io.curity.identityserver.plugin.authentication.Constants.BEARER;
 import static io.curity.identityserver.plugin.authentication.Constants.Params.PARAM_ACCESS_TOKEN;
+import static io.curity.identityserver.plugin.authentication.OAuthClient.notNullOrEmpty;
 import static io.curity.identityserver.plugin.bitbucket.authentication.Constants.*;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 
@@ -111,7 +113,8 @@ public class CallbackRequestHandler
         getRepositories(profileData, userAuthenticationData, accessToken);
         getAccountInfo(profileData, userAuthenticationData, accessToken, username);
         getEmails(userAuthenticationData, accessToken, username);
-        getTeams(userAuthenticationData, accessToken);
+        getTeams(userAuthenticationData, accessToken, _config.isGetTeams());
+        checkTeamMembership(userAuthenticationData, accessToken);
 
 
         AuthenticationAttributes attributes = AuthenticationAttributes.of(
@@ -125,8 +128,27 @@ public class CallbackRequestHandler
         return Optional.of(authenticationResult);
     }
 
-    private void getTeams(Map<String, Object> userAuthenticationData, String accessToken) {
-        if (_config.isGetTeams()) {
+    private void checkTeamMembership(Map<String, Object> userAuthenticationData, String accessToken) {
+        if (notNullOrEmpty(_config.getTeamName())) {
+            getTeams(userAuthenticationData, accessToken, true);
+            List teamsData = (ArrayList<Object>) ((Map<String, Object>) userAuthenticationData.get(TEAMS)).get("values");
+            boolean isTeamMember = false;
+            for (Object item : teamsData) {
+                Map<String, Object> value = (Map<String, Object>) item;
+                if (_config.getTeamName().equalsIgnoreCase(value.get(USERNAME).toString())) {
+                    isTeamMember = true;
+                }
+            }
+
+            if (!isTeamMember) {
+                _logger.warn("User is not a member of specified team.");
+                _oauthClient.redirectToAuthenticationOnError(ErrorCode.ACCESS_DENIED.toString(), "Access denied to specified team.", _config.id());
+            }
+        }
+    }
+
+    private void getTeams(Map<String, Object> userAuthenticationData, String accessToken, boolean isGetTeams) {
+        if (isGetTeams && userAuthenticationData.get(TEAMS) == null) {
             HttpGet getRequest = new HttpGet(TEAMS_URL);
             setAuthorizationHeader(getRequest, accessToken);
             Map<String, Object> teamsData = executeRequest(getRequest, false);
