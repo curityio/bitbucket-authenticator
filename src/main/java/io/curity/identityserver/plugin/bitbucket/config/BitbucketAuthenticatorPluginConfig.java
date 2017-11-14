@@ -34,7 +34,7 @@ public interface BitbucketAuthenticatorPluginConfig extends Configuration {
     String getClientSecret();
 
     @Description("URL to the Bitbucket authorization endpoint")
-    @DefaultURI("https://bitbucket.com/login/oauth/authorize")
+    @DefaultURI("https://bitbucket.org/site/oauth2/authorize")
     URI getAuthorizationEndpoint();
 
     @Description("URL to the Bitbucket token endpoint")

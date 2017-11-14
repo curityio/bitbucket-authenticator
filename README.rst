@@ -19,7 +19,7 @@ Config
 | ``Secret``        |                                                  | Bitbucket app secret key    |
 |                   |                                                  |                             |
 +-------------------+--------------------------------------------------+-----------------------------+
-| ``Authorization`` | https://bitbucket.com/login/oauth/authorize      | URL to the Bitbucket        |
+| ``Authorization`` | https://bitbucket.org/site/oauth2/authorize      | URL to the Bitbucket        |
 | ``Endpoint``      |                                                  | authorization endpoint      |
 |                   |                                                  |                             |
 +-------------------+--------------------------------------------------+-----------------------------+
