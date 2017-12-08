@@ -16,7 +16,7 @@
 
 package io.curity.identityserver.plugin.bitbucket.authentication;
 
-import io.curity.identityserver.plugin.authentication.CodeFlowOAuthClient;
+import io.curity.identityserver.plugin.authentication.DefaultOAuthClient;
 import io.curity.identityserver.plugin.authentication.OAuthClient;
 import io.curity.identityserver.plugin.bitbucket.config.BitbucketAuthenticatorPluginConfig;
 import org.apache.http.HttpResponse;
@@ -68,7 +68,7 @@ public class CallbackRequestHandler
                                   Json json,
                                   BitbucketAuthenticatorPluginConfig config) {
         _exceptionFactory = exceptionFactory;
-        _oauthClient = new CodeFlowOAuthClient(exceptionFactory, provider, json, config.getSessionManager());
+        _oauthClient = new DefaultOAuthClient(exceptionFactory, provider, json, config.getSessionManager());
         _config = config;
         _client = HttpClientBuilder.create().build();
         _json = json;

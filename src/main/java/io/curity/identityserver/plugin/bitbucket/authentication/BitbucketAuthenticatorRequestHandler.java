@@ -17,7 +17,7 @@
 package io.curity.identityserver.plugin.bitbucket.authentication;
 
 import com.google.common.collect.ImmutableMap;
-import io.curity.identityserver.plugin.authentication.CodeFlowOAuthClient;
+import io.curity.identityserver.plugin.authentication.DefaultOAuthClient;
 import io.curity.identityserver.plugin.authentication.OAuthClient;
 import io.curity.identityserver.plugin.bitbucket.config.BitbucketAuthenticatorPluginConfig;
 import org.slf4j.Logger;
@@ -51,7 +51,7 @@ public class BitbucketAuthenticatorRequestHandler implements AuthenticatorReques
                                                 Json json,
                                                 AuthenticatorInformationProvider provider) {
         _config = config;
-        _oauthClient = new CodeFlowOAuthClient(exceptionFactory, provider, json, config.getSessionManager());
+        _oauthClient = new DefaultOAuthClient(exceptionFactory, provider, json, config.getSessionManager());
     }
 
     @Override
