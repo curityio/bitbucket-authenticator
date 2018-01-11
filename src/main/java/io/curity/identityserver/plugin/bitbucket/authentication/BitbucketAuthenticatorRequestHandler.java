@@ -108,6 +108,75 @@ public class BitbucketAuthenticatorRequestHandler implements AuthenticatorReques
         {
             scopes.add("repository");
         }
+        switch (_config.getRepositoryAccess())
+        {
+            case READ:
+                if (!_config.isGetRepositories())
+                {
+                    scopes.add("repository");
+                }
+                break;
+            case WRITE:
+                scopes.add("repository:write");
+        }
+        if (_config.isRepositoryAdmin())
+        {
+            scopes.add("repository:admin");
+        }
+        switch (_config.getSnippetAccess())
+        {
+            case READ:
+                scopes.add("snippet");
+                break;
+            case WRITE:
+                scopes.add("snippet:write");
+        }
+        switch (_config.getIssueAccess())
+        {
+            case READ:
+                scopes.add("issue");
+                break;
+            case WRITE:
+                scopes.add("issue:write");
+        }
+        if (_config.isWikiAccess())
+        {
+            scopes.add("wiki");
+        }
+        switch (_config.getPullRequestAccess())
+        {
+            case READ:
+                scopes.add("pullrequest");
+                break;
+            case WRITE:
+                scopes.add("pullrequest:write");
+        }
+        switch (_config.getAccountAccess())
+        {
+            case READ:
+                if (!_config.isGetAccountInformation())
+                {
+                    scopes.add("account");
+                }
+                break;
+            case WRITE:
+                scopes.add("account:write");
+        }
+        switch (_config.getTeamAccess())
+        {
+            case READ:
+                if (!_config.isGetTeams())
+                {
+                    scopes.add("team");
+                }
+                break;
+            case WRITE:
+                scopes.add("team:write");
+        }
+        if (_config.isWebhookAccess())
+        {
+            scopes.add("webhook");
+        }
 
 
     }

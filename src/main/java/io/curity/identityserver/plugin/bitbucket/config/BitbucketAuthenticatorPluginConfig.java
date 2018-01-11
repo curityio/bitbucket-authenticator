@@ -18,7 +18,7 @@ package io.curity.identityserver.plugin.bitbucket.config;
 
 import se.curity.identityserver.sdk.config.Configuration;
 import se.curity.identityserver.sdk.config.annotation.DefaultBoolean;
-import se.curity.identityserver.sdk.config.annotation.DefaultURI;
+import se.curity.identityserver.sdk.config.annotation.DefaultEnum;
 import se.curity.identityserver.sdk.config.annotation.Description;
 import se.curity.identityserver.sdk.service.ExceptionFactory;
 import se.curity.identityserver.sdk.service.HttpClient;
@@ -27,7 +27,6 @@ import se.curity.identityserver.sdk.service.SessionManager;
 import se.curity.identityserver.sdk.service.WebServiceClientFactory;
 import se.curity.identityserver.sdk.service.authentication.AuthenticatorInformationProvider;
 
-import java.net.URI;
 import java.util.Optional;
 
 @SuppressWarnings("InterfaceNeverImplemented")
@@ -57,6 +56,47 @@ public interface BitbucketAuthenticatorPluginConfig extends Configuration
 
     @Description("The name of the team the user must be a part of to login")
     Optional<String> getTeamName();
+
+    enum Access
+    {
+        NONE, READ, WRITE
+    }
+
+    @Description("Manage access to all the repositories the authorizing user has access to")
+    @DefaultEnum("NONE")
+    Access getRepositoryAccess();
+
+    @Description("Request a scope (repository:admin) that gives the app admin access to all the repositories the authorizing user has access to. It gives access to the admin features of a repo only, not direct access to its contents")
+    @DefaultBoolean(false)
+    boolean isRepositoryAdmin();
+
+    @Description("Manage access to all the snippets the authorizing user has access to")
+    @DefaultEnum("NONE")
+    Access getSnippetAccess();
+
+    @Description("Manage ability to interact with issue trackers")
+    @DefaultEnum("NONE")
+    Access getIssueAccess();
+
+    @Description("Request a scope (wiki) that gives access to wiki's")
+    @DefaultBoolean(false)
+    boolean isWikiAccess();
+
+    @Description("Manage access to pull requests and collaborate on them")
+    @DefaultEnum("NONE")
+    Access getPullRequestAccess();
+
+    @Description("Manage ability to see and change all the user’s account information")
+    @DefaultEnum("NONE")
+    Access getAccountAccess();
+
+    @Description("Manage team access")
+    @DefaultEnum("NONE")
+    Access getTeamAccess();
+
+    @Description("Request a scope (webhook) that gives access to webhooks")
+    @DefaultBoolean(false)
+    boolean isWebhookAccess();
 
 
     @Description("The HTTP client with any proxy and TLS settings that will be used to connect to slack")
