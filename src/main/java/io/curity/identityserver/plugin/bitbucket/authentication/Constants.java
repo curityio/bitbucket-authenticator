@@ -19,7 +19,6 @@ public class Constants {
     public static final String REPOSITORIES_URL = USER_PROFILE_URL + "/repositories";
     public static final String ACCOUNT_URL = BASE_URL + "1.0/users/";
     public static final String TEAMS_URL = BASE_URL + "2.0/teams?role=member";
-    public static final String EMAILS_URL = ACCOUNT_URL + "{accountname}/emails";
-
+    public static final String EMAILS_URL = ACCOUNT_URL + "/1.0/users/{accountname}/emails";
 
 }

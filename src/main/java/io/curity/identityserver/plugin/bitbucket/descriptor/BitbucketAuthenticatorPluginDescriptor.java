@@ -16,35 +16,41 @@
 
 package io.curity.identityserver.plugin.bitbucket.descriptor;
 
-import com.google.common.collect.ImmutableMap;
-import io.curity.identityserver.plugin.bitbucket.authentication.CallbackRequestHandler;
 import io.curity.identityserver.plugin.bitbucket.authentication.BitbucketAuthenticatorRequestHandler;
+import io.curity.identityserver.plugin.bitbucket.authentication.CallbackRequestHandler;
 import io.curity.identityserver.plugin.bitbucket.config.BitbucketAuthenticatorPluginConfig;
 import se.curity.identityserver.sdk.authentication.AuthenticatorRequestHandler;
 import se.curity.identityserver.sdk.plugin.descriptor.AuthenticatorPluginDescriptor;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public final class BitbucketAuthenticatorPluginDescriptor
-        implements AuthenticatorPluginDescriptor<BitbucketAuthenticatorPluginConfig> {
-    public final static String INDEX = "index";
+        implements AuthenticatorPluginDescriptor<BitbucketAuthenticatorPluginConfig>
+{
     public final static String CALLBACK = "callback";
 
     @Override
-    public String getPluginImplementationType() {
+    public String getPluginImplementationType()
+    {
         return "bitbucket";
     }
 
     @Override
-    public Class<? extends BitbucketAuthenticatorPluginConfig> getConfigurationType() {
+    public Class<? extends BitbucketAuthenticatorPluginConfig> getConfigurationType()
+    {
         return BitbucketAuthenticatorPluginConfig.class;
     }
 
     @Override
-    public Map<String, Class<? extends AuthenticatorRequestHandler<?>>> getAuthenticationRequestHandlerTypes() {
-        return ImmutableMap.of(
-                INDEX, BitbucketAuthenticatorRequestHandler.class,
-                CALLBACK, CallbackRequestHandler.class);
+    public Map<String, Class<? extends AuthenticatorRequestHandler<?>>> getAuthenticationRequestHandlerTypes()
+    {
+        Map<String, Class<? extends AuthenticatorRequestHandler<?>>> handlers = new LinkedHashMap<>(2);
+        handlers.put("index", BitbucketAuthenticatorRequestHandler.class);
+        handlers.put(CALLBACK, CallbackRequestHandler.class);
+
+        return Collections.unmodifiableMap(handlers);
     }
 
 }

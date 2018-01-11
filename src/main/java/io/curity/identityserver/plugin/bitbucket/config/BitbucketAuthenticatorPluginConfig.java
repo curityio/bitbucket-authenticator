@@ -18,50 +18,58 @@ package io.curity.identityserver.plugin.bitbucket.config;
 
 import se.curity.identityserver.sdk.config.Configuration;
 import se.curity.identityserver.sdk.config.annotation.DefaultBoolean;
-import se.curity.identityserver.sdk.config.annotation.DefaultString;
 import se.curity.identityserver.sdk.config.annotation.DefaultURI;
 import se.curity.identityserver.sdk.config.annotation.Description;
+import se.curity.identityserver.sdk.service.ExceptionFactory;
+import se.curity.identityserver.sdk.service.HttpClient;
+import se.curity.identityserver.sdk.service.Json;
 import se.curity.identityserver.sdk.service.SessionManager;
+import se.curity.identityserver.sdk.service.WebServiceClientFactory;
+import se.curity.identityserver.sdk.service.authentication.AuthenticatorInformationProvider;
 
 import java.net.URI;
+import java.util.Optional;
 
 @SuppressWarnings("InterfaceNeverImplemented")
-public interface BitbucketAuthenticatorPluginConfig extends Configuration {
+public interface BitbucketAuthenticatorPluginConfig extends Configuration
+{
     @Description("Consumer key")
     String getClientId();
 
-    @Description("Consumer secret used for communication with bitbucket")
+    @Description("Consumer secret of the client application")
     String getClientSecret();
-
-    @Description("URL to the Bitbucket authorization endpoint")
-    @DefaultURI("https://bitbucket.org/site/oauth2/authorize")
-    URI getAuthorizationEndpoint();
-
-    @Description("URL to the Bitbucket token endpoint")
-    @DefaultURI("https://bitbucket.org/site/oauth2/access_token")
-    URI getTokenEndpoint();
 
     @Description("Get list of teams the user is a member of")
     @DefaultBoolean(false)
-    Boolean isGetTeams();
-
+    boolean isGetTeams();
 
     @Description("Get list of repositories the user has access to")
     @DefaultBoolean(false)
-    Boolean isGetRepositories();
+    boolean isGetRepositories();
 
     @Description("Get user account information as well as email")
     @DefaultBoolean(false)
-    Boolean isGetAccountInformation();
+    boolean isGetAccountInformation();
 
     @Description("Get the users email address")
     @DefaultBoolean(true)
-    Boolean isGetEmails();
+    boolean isGetEmails();
 
     @Description("The name of the team the user must be a part of to login")
-    @DefaultString("")
-    String getTeamName();
+    Optional<String> getTeamName();
+
+
+    @Description("The HTTP client with any proxy and TLS settings that will be used to connect to slack")
+    Optional<HttpClient> getHttpClient();
 
     SessionManager getSessionManager();
+
+    ExceptionFactory getExceptionFactory();
+
+    AuthenticatorInformationProvider getAuthenticatorInformationProvider();
+
+    WebServiceClientFactory getWebServiceClientFactory();
+
+    Json getJson();
 
 }
