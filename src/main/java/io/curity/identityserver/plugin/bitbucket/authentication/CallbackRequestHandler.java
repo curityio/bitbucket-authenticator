@@ -44,6 +44,7 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -193,8 +194,28 @@ public class CallbackRequestHandler implements AuthenticatorRequestHandler<Callb
     {
         if (isGetTeams && userAuthenticationData.get(TEAMS) == null)
         {
-            Map<String, Object> teamsData = executeRequest("/2.0/teams?role=member", accessToken, false);
-            userAuthenticationData.put(TEAMS, teamsData);
+            HttpResponse tokenResponse = getWebServiceAPIClient()
+                    .withPath("/2.0/teams")
+                    .withQueries(Collections.singletonMap("role", Collections.singleton("member")))
+                    .request()
+                    .contentType("application/json")
+                    .header("Authorization", "Bearer " + accessToken)
+                    .method("GET")
+                    .response();
+            int statusCode = tokenResponse.statusCode();
+
+            if (statusCode != 200)
+            {
+                if (_logger.isInfoEnabled())
+                {
+                    _logger.info("Got error response from team endpoint: error = {}, {}", statusCode,
+                            tokenResponse.body(HttpResponse.asString()));
+                }
+
+                throw _exceptionFactory.internalServerException(ErrorCode.EXTERNAL_SERVICE_ERROR);
+            }
+
+            userAuthenticationData.put(TEAMS, _json.fromJson(tokenResponse.body(HttpResponse.asString())));
         }
     }
 
@@ -254,7 +275,7 @@ public class CallbackRequestHandler implements AuthenticatorRequestHandler<Callb
         {
             if (_logger.isInfoEnabled())
             {
-                _logger.info("Got error response from token endpoint: error = {}, {}", statusCode,
+                _logger.info("Got error response from endpoint {} : error = {}, {}", requestPath, statusCode,
                         tokenResponse.body(HttpResponse.asString()));
             }
 
