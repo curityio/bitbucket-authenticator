@@ -72,7 +72,7 @@ URI Component                  Meaning
 ``baseUrl``                    The base URL of the server (defined on the ``System --> General`` page of the
                                admin GUI). If this value is not set, then the server scheme, name, and port should be
                                used (e.g., ``https://localhost:8443``).
-``authenticaitonEndpointPath`` The path of the authentication endpoint. In the admin GUI, this is located in the
+``authenticationEndpointPath`` The path of the authentication endpoint. In the admin GUI, this is located in the
                                authentication profile's ``Endpoints`` tab for the endpoint that has the type
                                ``auth-authentication``.
 ``bitbucketAuthenticatorId``   This is the name given to the Bitbucket authenticator when defining it (e.g., ``bitbucket1``).
@@ -128,7 +128,7 @@ The easiest way to configure a new Bitbucket authenticator is using the Curity a
 
 8. In the ``Client ID`` textfield, enter the ``Key`` from the Bitbucket app consumer.
 9. Also enter the matching ``Client Secret``.
-10. If you have enabled any scopes or wish to limit the scopes that Curity will request of Bitbucket, toggle on the desired scopes (e.g., ``Account Info`` or ``Read Repository``).
+10. If you wish to limit the scopes that Curity will request of Bitbucket, toggle on the desired scopes (e.g., ``Account Info`` or ``Read Repository``).
 
 Once all of these changes are made, they will be staged, but not committed (i.e., not running). To make them active, click the ``Commit`` menu option in the ``Changes`` menu. Optionally enter a comment in the ``Deploy Changes`` dialogue and click ``OK``.
 
