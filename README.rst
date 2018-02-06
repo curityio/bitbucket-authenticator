@@ -1,7 +1,7 @@
 Bitbucket Authenticator Plug-in
 ===============================
 
-.. image:: https://travis-ci.org/curityio/bitbucket-authenticator.svg?branch=dev
+.. image:: https://travis-ci.org/curityio/bitbucket-authenticator.svg?branch=master
     :target: https://travis-ci.org/curityio/bitbucket-authenticator
 
 This project provides an opens source Bitbucket Authenticator plug-in for the Curity Identity Server. This allows an administrator to add functionality to Curity which will then enable end users to login using their Bitbucket credentials. The app that integrates with Curity may also be configured to receive the Bitbucket access token and refresh token, allowing it to manage resources in Bitbucket.
