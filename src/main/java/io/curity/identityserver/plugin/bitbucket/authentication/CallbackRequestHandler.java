@@ -56,6 +56,7 @@ import static io.curity.identityserver.plugin.bitbucket.authentication.Constants
 import static io.curity.identityserver.plugin.bitbucket.authentication.Constants.TEAMS;
 import static io.curity.identityserver.plugin.bitbucket.authentication.Constants.USER;
 import static io.curity.identityserver.plugin.bitbucket.authentication.Constants.USERNAME;
+import static io.curity.identityserver.plugin.bitbucket.authentication.RedirectUriUtil.createRedirectUri;
 
 public class CallbackRequestHandler implements AuthenticatorRequestHandler<CallbackGetRequestModel>
 {
@@ -111,12 +112,14 @@ public class CallbackRequestHandler implements AuthenticatorRequestHandler<Callb
 
     private Map<String, Object> redeemCodeForTokens(CallbackGetRequestModel requestModel)
     {
+        var redirectUri = createRedirectUri(_authenticatorInformationProvider, _exceptionFactory);
+
         HttpResponse tokenResponse = getWebServiceClient()
                 .withPath("/site/oauth2/access_token")
                 .request()
                 .contentType("application/x-www-form-urlencoded")
                 .body(getFormEncodedBodyFrom(createPostData(_config.getClientId(), _config.getClientSecret(),
-                        requestModel.getCode(), requestModel.getRequestUrl())))
+                        requestModel.getCode(), redirectUri)))
                 .method("POST")
                 .response();
         int statusCode = tokenResponse.statusCode();
@@ -144,14 +147,14 @@ public class CallbackRequestHandler implements AuthenticatorRequestHandler<Callb
             refreshToken = tokenResponseData.get("refresh_token").toString();
         }
 
-        Map<String, Object> profileData = executeRequest("/1.0/user", accessToken, false);
+        Map<String, Object> profileData = executeRequest("/2.0/user", accessToken, false);
         Map<String, Object> userAuthenticationData = new HashMap<>();
-        String username = ((Map) profileData.get(USER)).get(USERNAME).toString();
+        String username = profileData.get(USERNAME).toString();
         userAuthenticationData.put(USERNAME, username);
 
         getRepositories(profileData, userAuthenticationData, accessToken);
         getAccountInfo(profileData, userAuthenticationData, accessToken, username);
-        getEmails(userAuthenticationData, accessToken, username);
+        getEmails(userAuthenticationData, accessToken);
         getTeams(userAuthenticationData, accessToken, _config.isGetTeams());
         checkTeamMembership(userAuthenticationData, accessToken);
 
@@ -229,17 +232,17 @@ public class CallbackRequestHandler implements AuthenticatorRequestHandler<Callb
             }
             else
             {
-                Map<String, Object> accountData = executeRequest("/1.0/users/" + username, accessToken, false);
+                Map<String, Object> accountData = executeRequest("/2.0/users/" + username, accessToken, false);
                 userAuthenticationData.put(USER, accountData);
             }
         }
     }
 
-    private void getEmails(Map<String, Object> userAuthenticationData, String accessToken, String username)
+    private void getEmails(Map<String, Object> userAuthenticationData, String accessToken)
     {
         if (_config.isGetEmails())
         {
-            Map<String, Object> emailsData = executeRequest("/1.0/users/" + username + "/emails", accessToken, true);
+            Map<String, Object> emailsData = executeRequest("/2.0/user/emails", accessToken, false);
             userAuthenticationData.put(EMAILS, emailsData.get("data"));
         }
     }
@@ -254,7 +257,7 @@ public class CallbackRequestHandler implements AuthenticatorRequestHandler<Callb
             }
             else
             {
-                Map<String, Object> respositoriesData = executeRequest("/1.0/user/repositories", accessToken, false);
+                Map<String, Object> respositoriesData = executeRequest("/2.0/user/repositories", accessToken, false);
                 userAuthenticationData.put(REPOSITORIES, respositoriesData.get("data"));
             }
         }
